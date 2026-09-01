@@ -2,11 +2,31 @@
 
 namespace App\Repositories;
 
+use App\Models\Resident;
+
 /**
- * Repository placeholder for resident persistence operations.
+ * Persistence layer for Resident records.
  *
- * Functionality will be introduced through future sprint tickets.
+ * Responsible only for storing and retrieving Residents. Validation remains
+ * the responsibility of App\Services\ResidentValidator.
  */
 class ResidentRepository
 {
+    /**
+     * Persist a Resident and return it with its database-generated identifier.
+     */
+    public function save(Resident $resident): Resident
+    {
+        $resident->save();
+
+        return $resident;
+    }
+
+    /**
+     * Retrieve a Resident by identifier, or null when no such record exists.
+     */
+    public function findById(int $id): ?Resident
+    {
+        return Resident::find($id);
+    }
 }
