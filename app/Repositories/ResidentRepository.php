@@ -52,6 +52,19 @@ class ResidentRepository
     }
 
     /**
+     * Soft-deactivate one Resident by setting its status to Inactive.
+     *
+     * Only the status column of the requested record changes; the record is
+     * never deleted. Returns true when a Resident row was updated.
+     */
+    public function deactivateById(int $id): bool
+    {
+        return Resident::query()
+            ->whereKey($id)
+            ->update(['status' => 'Inactive']) === 1;
+    }
+
+    /**
      * Retrieve every persisted Resident ordered by last name, first name, then ID.
      */
     public function findAll(): Collection
