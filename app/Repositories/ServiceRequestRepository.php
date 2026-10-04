@@ -29,4 +29,18 @@ class ServiceRequestRepository
     {
         return ServiceRequest::find($id);
     }
+
+    /**
+     * Persist a new status for one existing Service Request.
+     *
+     * Only the status column of the requested record changes. Whether the
+     * transition is allowed is decided by ServiceRequestStatusService before
+     * this method is called. Returns true when a Service Request row was updated.
+     */
+    public function updateStatus(int $id, string $status): bool
+    {
+        return ServiceRequest::query()
+            ->whereKey($id)
+            ->update(['status' => $status]) === 1;
+    }
 }
