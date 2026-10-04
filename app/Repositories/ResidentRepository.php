@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Resident;
 use Illuminate\Database\Eloquent\Collection;
+use LogicException;
 
 /**
  * Persistence layer for Resident records.
@@ -29,6 +30,25 @@ class ResidentRepository
     public function findById(int $id): ?Resident
     {
         return Resident::find($id);
+    }
+
+    /**
+     * Persist changes to an existing Resident record and return its stored state.
+     *
+     * Only an already-persisted Resident may be updated, so this method can
+     * never insert a new record. Eloquent issues UPDATE ... WHERE id = ?.
+     */
+    public function update(Resident $resident): Resident
+    {
+        if (! $resident->exists) {
+            throw new LogicException(
+                'Only an existing Resident can be updated.'
+            );
+        }
+
+        $resident->save();
+
+        return $this->findById($resident->id);
     }
 
     /**
