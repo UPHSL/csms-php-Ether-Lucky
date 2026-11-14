@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Resident;
+use App\Support\LikePattern;
 use Illuminate\Database\Eloquent\Collection;
 use LogicException;
 
@@ -110,24 +111,25 @@ class ResidentRepository
 
     /**
      * Retrieve Residents whose first or last name contains the search term,
-     * ignoring letter case, using the same ordering as findAll().
+     * ignoring letter case, using the same ordering as findAll(). The term is
+     * matched literally: % and _ in it are not treated as wildcards.
      */
     public function searchByName(
         string $searchTerm
     ): Collection {
         $pattern =
-            '%'.$searchTerm.'%';
+            LikePattern::contains($searchTerm);
 
         return Resident::query()
             ->where(
                 function ($query) use ($pattern) {
                     $query
                         ->whereRaw(
-                            'LOWER(first_name) LIKE LOWER(?)',
+                            "LOWER(first_name) LIKE LOWER(?) ESCAPE '!'",
                             [$pattern]
                         )
                         ->orWhereRaw(
-                            'LOWER(last_name) LIKE LOWER(?)',
+                            "LOWER(last_name) LIKE LOWER(?) ESCAPE '!'",
                             [$pattern]
                         );
                 }
