@@ -322,6 +322,8 @@
         <nav class="site-nav" aria-label="Main navigation">
             <a href="{{ route('residents.index') }}"
                @class(['current' => request()->routeIs('residents.*')])>Residents</a>
+            <a href="{{ route('service-requests.index') }}"
+               @class(['current' => request()->routeIs('service-requests.*')])>Service Requests</a>
         </nav>
     </div>
 </header>
