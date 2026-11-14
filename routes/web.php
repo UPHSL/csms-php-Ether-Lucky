@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ResidentController;
@@ -28,3 +29,5 @@ Route::controller(ServiceRequestController::class)->group(function () {
     Route::post('/service-requests/{id}/complete', 'complete')->whereNumber('id')->name('service-requests.complete');
     Route::post('/service-requests/{id}/cancel', 'cancel')->whereNumber('id')->name('service-requests.cancel');
 });
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

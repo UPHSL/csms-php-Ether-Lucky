@@ -320,6 +320,8 @@
         <span class="brand">CSMS</span>
 
         <nav class="site-nav" aria-label="Main navigation">
+            <a href="{{ route('dashboard') }}"
+               @class(['current' => request()->routeIs('dashboard')])>Dashboard</a>
             <a href="{{ route('residents.index') }}"
                @class(['current' => request()->routeIs('residents.*')])>Residents</a>
             <a href="{{ route('service-requests.index') }}"
