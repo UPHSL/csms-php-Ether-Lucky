@@ -92,12 +92,17 @@ class ServiceRequestController extends Controller
         Request $request,
         ServiceRequestSubmissionService $submissionService
     ): RedirectResponse {
+        $input = [
+            'resident_id' => $this->stringInput($request, 'resident_id'),
+            'service_type' => $this->stringInput($request, 'service_type'),
+            'description' => $this->stringInput($request, 'description'),
+            'date_requested' => $this->stringInput($request, 'date_requested'),
+        ];
+
         $result = $submissionService->submitServiceRequest(
             new ServiceRequest([
-                'resident_id' => $this->residentIdInput($request),
-                'service_type' => $this->stringInput($request, 'service_type'),
-                'description' => $this->stringInput($request, 'description'),
-                'date_requested' => $this->stringInput($request, 'date_requested'),
+                ...$input,
+                'resident_id' => $this->residentIdValue($input['resident_id']),
             ])
         );
 
@@ -122,7 +127,7 @@ class ServiceRequestController extends Controller
 
         return redirect()
             ->route('service-requests.create')
-            ->withInput()
+            ->withInput($input)
             ->withErrors($errors);
     }
 
@@ -219,10 +224,8 @@ class ServiceRequestController extends Controller
      * The submitted Resident ID as an integer when it is written as plain
      * digits; otherwise the raw text, which the submission service rejects.
      */
-    private function residentIdInput(Request $request): int|string|null
+    private function residentIdValue(?string $value): int|string|null
     {
-        $value = $this->stringInput($request, 'resident_id');
-
         if ($value !== null && preg_match('/^[0-9]{1,18}$/', $value) === 1) {
             return (int) $value;
         }

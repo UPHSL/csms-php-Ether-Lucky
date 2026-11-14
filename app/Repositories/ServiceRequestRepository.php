@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\ServiceRequest;
+use App\Support\LikePattern;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -60,7 +61,8 @@ class ServiceRequestRepository
      * same ordering as findAll().
      *
      * A search term matches when it appears, ignoring letter case, anywhere in
-     * the service type or the description. A status restricts the result to
+     * the service type or the description; % and _ in the term are matched
+     * literally, not as wildcards. A status restricts the result to
      * that exact status. When both are supplied a Service Request must satisfy
      * both. A null condition is not applied. All values are bound as query
      * parameters and the filtering is performed by the database.
@@ -72,17 +74,17 @@ class ServiceRequestRepository
         $query = $this->orderedQuery();
 
         if ($searchTerm !== null) {
-            $pattern = '%'.$searchTerm.'%';
+            $pattern = LikePattern::contains($searchTerm);
 
             $query->where(
                 function (Builder $query) use ($pattern) {
                     $query
                         ->whereRaw(
-                            'LOWER(service_type) LIKE LOWER(?)',
+                            "LOWER(service_type) LIKE LOWER(?) ESCAPE '!'",
                             [$pattern]
                         )
                         ->orWhereRaw(
-                            'LOWER(description) LIKE LOWER(?)',
+                            "LOWER(description) LIKE LOWER(?) ESCAPE '!'",
                             [$pattern]
                         );
                 }

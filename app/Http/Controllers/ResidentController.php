@@ -55,16 +55,16 @@ class ResidentController extends Controller
         Request $request,
         ResidentRegistrationService $registrationService
     ): RedirectResponse {
+        $input = $this->residentInput($request);
+
         $result = $registrationService->registerResident(
-            new Resident(
-                $this->residentInput($request)
-            )
+            new Resident($input)
         );
 
         if (! $result->success) {
             return redirect()
                 ->route('residents.create')
-                ->withInput()
+                ->withInput($input)
                 ->withErrors($this->messagesFor($result->errors));
         }
 
@@ -91,9 +91,11 @@ class ResidentController extends Controller
         string $id,
         ResidentUpdateService $updateService
     ): RedirectResponse {
+        $input = $this->residentInput($request);
+
         $result = $updateService->updateResident(
             (int) $id,
-            $this->residentInput($request)
+            $input
         );
 
         abort_if($result->notFound, 404, 'Resident not found.');
@@ -101,7 +103,7 @@ class ResidentController extends Controller
         if (! $result->success) {
             return redirect()
                 ->route('residents.edit', ['id' => $id])
-                ->withInput()
+                ->withInput($input)
                 ->withErrors($this->messagesFor($result->errors));
         }
 
