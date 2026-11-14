@@ -97,6 +97,42 @@ class ServiceRequestRepository
     }
 
     /**
+     * Retrieve at most $limit Service Requests, most recent first, using the
+     * same ordering as findAll(). The limit is applied by the database.
+     */
+    public function findRecent(int $limit): Collection
+    {
+        return $this->orderedQuery()
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * Count every persisted Service Request with COUNT(*).
+     */
+    public function countAll(): int
+    {
+        return ServiceRequest::query()->count();
+    }
+
+    /**
+     * Count persisted Service Requests per status with one GROUP BY query.
+     * A status that no Service Request currently has is absent from the result.
+     *
+     * @return array<string, int>
+     */
+    public function countByStatus(): array
+    {
+        return ServiceRequest::query()
+            ->toBase()
+            ->selectRaw('status, COUNT(*) AS total')
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->map(fn ($total) => (int) $total)
+            ->all();
+    }
+
+    /**
      * Base query carrying the one ordering shared by every Service Request
      * read operation: date_requested DESC, then id DESC.
      */

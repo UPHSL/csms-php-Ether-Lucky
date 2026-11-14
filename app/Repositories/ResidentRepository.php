@@ -65,6 +65,31 @@ class ResidentRepository
     }
 
     /**
+     * Count every persisted Resident, Active and Inactive, with COUNT(*).
+     */
+    public function countAll(): int
+    {
+        return Resident::query()->count();
+    }
+
+    /**
+     * Count persisted Residents per status with one GROUP BY query.
+     * A status that no Resident currently has is absent from the result.
+     *
+     * @return array<string, int>
+     */
+    public function countByStatus(): array
+    {
+        return Resident::query()
+            ->toBase()
+            ->selectRaw('status, COUNT(*) AS total')
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->map(fn ($total) => (int) $total)
+            ->all();
+    }
+
+    /**
      * Retrieve every persisted Resident ordered by last name, first name, then ID.
      */
     public function findAll(): Collection
