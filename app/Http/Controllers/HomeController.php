@@ -9,10 +9,10 @@ class HomeController extends Controller
     public function index(): View
     {
         return view('index', [
-            'application' => 'Community Services Management System',
+            'application' => config('csms.name'),
             'sprint' => 'Sprint 0 - Developer Onboarding',
             'technology' => 'PHP with Laravel',
-            'version' => '0.1.0',
+            'version' => config('csms.version'),
         ]);
     }
 }

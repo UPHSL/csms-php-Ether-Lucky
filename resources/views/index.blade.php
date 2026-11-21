@@ -76,6 +76,27 @@
             font-weight: 700;
             font-size: 1.05rem;
         }
+
+        .modules {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .modules a {
+            padding: 10px 16px;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            color: #1f2937;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .modules a:first-child {
+            background: #1f2937;
+            color: #fff;
+        }
     </style>
 </head>
 
@@ -117,6 +138,12 @@
     <p class="status">
         Environment status: Ready
     </p>
+
+    <nav class="modules" aria-label="CSMS modules">
+        <a href="{{ route('dashboard') }}">Dashboard</a>
+        <a href="{{ route('residents.index') }}">Residents</a>
+        <a href="{{ route('service-requests.index') }}">Service Requests</a>
+    </nav>
 
 </div>
 
