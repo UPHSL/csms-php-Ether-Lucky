@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>@yield('title') - CSMS</title>
+    <title>@yield('title') - {{ config('csms.short_name') }}</title>
 
     <style>
         * {
@@ -310,6 +310,17 @@
             font-size: 0.9rem;
             color: #374151;
         }
+
+        .site-footer {
+            border-top: 1px solid #d9dde3;
+            background: #fff;
+            color: #4b5563;
+            font-size: 0.9rem;
+        }
+
+        .site-footer .inner {
+            padding: 14px 0;
+        }
     </style>
 </head>
 
@@ -317,7 +328,7 @@
 
 <header class="site-header">
     <div class="inner">
-        <span class="brand">CSMS</span>
+        <span class="brand">{{ config('csms.short_name') }}</span>
 
         <nav class="site-nav" aria-label="Main navigation">
             <a href="{{ route('dashboard') }}"
@@ -341,6 +352,13 @@
     @yield('content')
 
 </main>
+
+<footer class="site-footer">
+    <div class="inner">
+        {{ config('csms.name') }} &middot;
+        <span data-release-version>v{{ config('csms.version') }}</span>
+    </div>
+</footer>
 
 </body>
 </html>
